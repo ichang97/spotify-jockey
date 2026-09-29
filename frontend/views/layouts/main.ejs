@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'Spotify Jockey' %></title>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body class="sj-bg-base">
+  <%- include('../partials/navbar') %>
+
+  <main class="flex-grow-1">
+    <%- body %>
+  </main>
+
+  <%- include('../partials/footer') %>
+
+  <script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

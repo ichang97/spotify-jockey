@@ -1,0 +1,211 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1 class="h3 fw-bold sj-text-main mb-1">Station Settings & Theme</h1>
+          <span class="small sj-accent-color">/<%= station.slug %></span>
+        </div>
+        <a href="/studio/<%= station.slug %>" class="btn sj-btn-outline">
+          ← Back to Studio
+        </a>
+      </div>
+
+      <div id="saveSuccessAlert" class="alert alert-success d-none py-2 mb-4">
+        Settings and Theme Palette saved successfully!
+      </div>
+
+      <div class="sj-card mb-4">
+        <h2 class="h5 fw-bold sj-text-main mb-3">Spotify Integration</h2>
+        <div class="d-flex flex-wrap justify-content-between align-items-center p-3 rounded sj-bg-surface sj-border">
+          <div>
+            <div class="fw-semibold sj-text-main">
+              Status:
+              <% if (station.is_spotify_connected) { %>
+                <span class="badge bg-success ms-1">Connected</span>
+              <% } else { %>
+                <span class="badge bg-secondary ms-1">Disconnected</span>
+              <% } %>
+            </div>
+            <div class="small sj-text-muted mt-1">
+              Requires Spotify Premium for full-length 320 kbps audio streaming via Spotify Connect (plays complete tracks without 30-second preview limits).
+            </div>
+          </div>
+          <div class="mt-2 mt-md-0">
+            <% if (station.is_spotify_connected) { %>
+              <button id="btnDisconnectSpotify" class="btn btn-outline-danger btn-sm">
+                Disconnect Spotify
+              </button>
+            <% } else { %>
+              <button id="btnConnectSpotify" class="btn sj-btn-accent btn-sm">
+                Connect Spotify
+              </button>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <form id="formSettings">
+        <div class="sj-card mb-4">
+          <h2 class="h5 fw-bold sj-text-main mb-3">General Information</h2>
+          <div class="mb-3">
+            <label class="form-label sj-text-main">Station Name</label>
+            <input type="text" id="stationName" class="form-control" value="<%= station.name %>" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label sj-text-main">Description</label>
+            <textarea id="stationDescription" class="form-control" rows="3"><%= station.description || '' %></textarea>
+          </div>
+        </div>
+
+        <div class="sj-card mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h5 fw-bold sj-text-main mb-0">Theme Palette Customizer</h2>
+            <div class="d-flex align-items-center gap-2">
+              <span class="small sj-text-muted">Presets:</span>
+              <select id="presetSelect" class="form-select form-select-sm">
+                <option value="obsidian">Obsidian Minimal (Default)</option>
+                <option value="slate">Slate Minimal</option>
+                <option value="spotify_neon">Spotify Neon</option>
+                <option value="amber_retro">Amber Retro</option>
+              </select>
+            </div>
+          </div>
+
+          <p class="small sj-text-muted mb-4">
+            Changes apply in real-time. Click Save Settings below to store your station palette.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-12 col-md-6 col-lg-4">
+              <label class="form-label small sj-text-main d-block">Base Background</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="color" id="color_bg_base" class="sj-color-picker-input">
+                <span class="small sj-text-muted">Main Background</span>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <label class="form-label small sj-text-main d-block">Surface Background</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="color" id="color_bg_surface" class="sj-color-picker-input">
+                <span class="small sj-text-muted">Navbar / Bars</span>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <label class="form-label small sj-text-main d-block">Card Background</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="color" id="color_bg_card" class="sj-color-picker-input">
+                <span class="small sj-text-muted">Cards & Panels</span>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <label class="form-label small sj-text-main d-block">Border Color</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="color" id="color_border" class="sj-color-picker-input">
+                <span class="small sj-text-muted">Dividers</span>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <label class="form-label small sj-text-main d-block">Primary Text</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="color" id="color_text_main" class="sj-color-picker-input">
+                <span class="small sj-text-muted">Headings</span>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <label class="form-label small sj-text-main d-block">Muted Text</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="color" id="color_text_muted" class="sj-color-picker-input">
+                <span class="small sj-text-muted">Captions</span>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <label class="form-label small sj-text-main d-block">Accent Color</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="color" id="color_accent" class="sj-color-picker-input">
+                <span class="small sj-text-muted">Buttons & Active</span>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <label class="form-label small sj-text-main d-block">Accent Hover</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="color" id="color_accent_hover" class="sj-color-picker-input">
+                <span class="small sj-text-muted">Hover State</span>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <label class="form-label small sj-text-main d-block">Live Badge</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="color" id="color_live" class="sj-color-picker-input">
+                <span class="small sj-text-muted">ON-AIR Pulse</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+          <button type="submit" class="btn sj-btn-accent px-4 py-2">
+            Save Settings & Palette
+          </button>
+        </div>
+      </form>
+
+      <div class="sj-card border-danger mt-5">
+        <h2 class="h5 fw-bold text-danger mb-2">Danger Zone</h2>
+        <p class="small sj-text-muted mb-3">
+          การลบสถานีจะไม่สามารถกู้คืนได้ และข้อมูลทั้งหมดของสถานี (เพลง, คิว, ประวัติการเล่น, แชท) จะถูกลบถาวร
+        </p>
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <span class="small fw-semibold sj-text-main d-block">ลบสถานีนี้</span>
+            <span class="small sj-text-muted">โปรดใช้ความระมัดระวังเมื่อดำเนินการ</span>
+          </div>
+          <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteStation">
+            ลบสถานี (Delete Station)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalDeleteStation" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content sj-bg-surface sj-border">
+      <form id="formDeleteStation">
+        <div class="modal-header sj-border-bottom">
+          <h5 class="modal-title text-danger">ยืนยันการลบสถานี</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p class="small sj-text-main mb-3">
+            คุณแน่ใจหรือไม่ว่าต้องการลบสถานี <strong><%= station.name %></strong> (/<%= station.slug %>)? การดำเนินการนี้ไม่สามารถย้อนกลับได้
+          </p>
+          <div id="deleteErrorAlert" class="alert alert-danger py-2 small d-none mb-3"></div>
+          <div class="mb-3">
+            <label class="form-label sj-text-main small">DJ Passcode</label>
+            <input type="password" id="deletePasscodeInput" class="form-control" placeholder="กรอก DJ Passcode เพื่อยืนยัน" required autocomplete="current-password">
+          </div>
+        </div>
+        <div class="modal-footer sj-border-top">
+          <button type="button" class="btn sj-btn-outline" data-bs-dismiss="modal">ยกเลิก</button>
+          <button type="submit" id="btnConfirmDelete" class="btn btn-danger">ยืนยันการลบสถานี</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.STATION_SLUG = "<%= station.slug %>";
+  window.STATION_PALETTE = <%- JSON.stringify(station.palette_config || {}).replace(/</g, '\\u003c').replace(/>/g, '\\u003e') %>;
+</script>
+<script type="module" src="/js/settings.js"></script>

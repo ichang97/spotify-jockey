@@ -1,0 +1,25 @@
+{
+  "name": "spotify-jockey-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "build:css": "sass --load-path=node_modules src/scss/main.scss public/css/main.css --no-source-map --style=compressed",
+    "build:assets": "node -e \"const fs = require('fs'); fs.mkdirSync('public/js', {recursive: true}); fs.mkdirSync('public/css', {recursive: true}); fs.cpSync('src/js', 'public/js', {recursive: true}); fs.cpSync('node_modules/bootstrap/dist/js/bootstrap.bundle.min.js', 'public/js/bootstrap.bundle.min.js');\"",
+    "build": "npm run build:assets && npm run build:css",
+    "start": "node server.js",
+    "dev": "npm run build && node server.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.8",
+    "bootstrap": "^5.3.3",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.9",
+    "express": "^4.19.2",
+    "express-ejs-layouts": "^2.5.1",
+    "http-proxy-middleware": "^3.0.3"
+  },
+  "devDependencies": {
+    "sass": "^1.72.0"
+  }
+}

@@ -1,0 +1,31 @@
+<nav class="navbar navbar-expand-lg sj-bg-surface sj-border-bottom py-3">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand d-flex align-items-center gap-2 fw-bold sj-text-main" href="/">
+      <span class="sj-badge-accent">SJ</span>
+      <span>Spotify Jockey</span>
+    </a>
+    <button class="navbar-toggler sj-border" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav ms-auto align-items-center gap-2">
+        <li class="nav-item">
+          <a class="nav-link sj-text-main" href="/">Stations</a>
+        </li>
+        <% if (typeof station !== 'undefined' && station) { %>
+          <li class="nav-item">
+            <a class="nav-link sj-text-main" href="/live/<%= station.slug %>">
+              <span class="sj-pulse-dot me-1"></span> Listen Live
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link sj-text-main" href="/studio/<%= station.slug %>">DJ Studio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link sj-text-main" href="/settings/<%= station.slug %>">Settings</a>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>

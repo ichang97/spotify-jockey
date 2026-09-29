@@ -1,0 +1,201 @@
+<div class="container-fluid px-4 py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 sj-border-bottom">
+    <div class="d-flex align-items-center gap-3">
+      <div>
+        <h1 class="h4 fw-bold sj-text-main mb-0"><%= station.name %> - Studio Console</h1>
+        <span class="small sj-accent-color">/<%= station.slug %></span>
+      </div>
+      <span id="liveBadge" class="sj-badge-live d-none">
+        <span class="sj-pulse-dot me-1"></span> ON-AIR
+      </span>
+      <span id="spotifyConnectBadge" class="badge bg-secondary">
+        Spotify Connect: Initializing...
+      </span>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2 mt-2 mt-md-0">
+      <button id="btnToggleMic" class="btn sj-btn-outline">
+        Open Mic <span id="micStatus" class="badge bg-secondary ms-2">Muted</span>
+      </button>
+      <button id="btnCaptureMusic" class="btn sj-btn-outline">
+        Capture Tab / Spotify Audio <span id="musicCaptureStatus" class="badge bg-secondary ms-2">Idle</span>
+      </button>
+      <button id="btnGoLive" class="btn sj-btn-accent px-4">
+        GO LIVE (ON-AIR)
+      </button>
+      <button id="btnLockStudio" class="btn sj-btn-outline" title="Lock Studio Session">
+        🔒 Lock
+      </button>
+    </div>
+  </div>
+
+  <% if (!station.is_spotify_connected) { %>
+    <div class="alert alert-warning d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <strong>Spotify Not Connected:</strong> Connect your Spotify account to search tracks and manage playback.
+      </div>
+      <a href="/settings/<%= station.slug %>" class="btn btn-sm sj-btn-accent">
+        Connect Spotify
+      </a>
+    </div>
+  <% } %>
+
+  <div class="row g-4 mb-4">
+    <div class="col-12 col-lg-8">
+      <div class="sj-card h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="small text-uppercase fw-bold sj-text-muted">Master Playback Deck</span>
+          <div class="d-flex align-items-center">
+            <div class="sj-waveform-bar"></div>
+            <div class="sj-waveform-bar"></div>
+            <div class="sj-waveform-bar"></div>
+            <div class="sj-waveform-bar"></div>
+            <div class="sj-waveform-bar"></div>
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-4 align-items-center mb-4">
+          <div>
+            <img id="nowPlayingArt" src="" class="sj-cover-art-lg d-none" alt="Album Cover">
+            <div id="nowPlayingArtPlaceholder" class="sj-cover-art-placeholder">
+              <span>No Track</span>
+            </div>
+          </div>
+
+          <div class="flex-grow-1">
+            <h2 id="nowPlayingTitle" class="h4 fw-bold sj-text-main mb-1">Ready to Broadcast</h2>
+            <div id="nowPlayingArtist" class="sj-accent-color fw-semibold mb-1">Load track from search or queue</div>
+            <div id="nowPlayingAlbum" class="small sj-text-muted mb-3"></div>
+
+            <div class="sj-progress-container mb-2">
+              <div id="progressBar" class="sj-progress-fill"></div>
+            </div>
+
+            <div class="d-flex justify-content-between small sj-text-muted mb-3">
+              <span id="timeCurrent">0:00</span>
+              <span id="timeTotal">0:00</span>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button id="btnDeckPlay" class="btn sj-btn-accent px-4">Play</button>
+              <button id="btnDeckNext" class="btn sj-btn-outline px-3">Next Track ⏭</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="sj-card h-100">
+        <span class="small text-uppercase fw-bold sj-text-muted d-block mb-3">Audio Mixer & Ducking</span>
+
+        <div class="mb-3">
+          <label class="form-label small sj-text-main d-flex justify-content-between">
+            <span>Microphone Gain</span>
+          </label>
+          <input type="range" class="form-range" id="micGainSlider" min="0" max="2" step="0.05" value="1.0">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label small sj-text-main d-flex justify-content-between">
+            <span>Music Audio Gain</span>
+          </label>
+          <input type="range" class="form-range" id="musicGainSlider" min="0" max="2" step="0.05" value="1.0">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label small sj-text-main d-flex justify-content-between">
+            <span>DJ Monitor (Headphones)</span>
+            <span id="monitorVolText" class="small sj-text-muted">80%</span>
+          </label>
+          <input type="range" class="form-range" id="monitorVolSlider" min="0" max="1" step="0.05" value="0.8">
+        </div>
+
+        <div class="form-check form-switch pt-2 sj-border-top">
+          <input class="form-check-input" type="checkbox" id="duckingToggle" checked>
+          <label class="form-check-label small sj-text-main" for="duckingToggle">
+            Auto-Ducking (Attenuate music when DJ speaks)
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-12 col-lg-4">
+      <div class="sj-card">
+        <span class="small text-uppercase fw-bold sj-text-muted d-block mb-3">Spotify Music Search</span>
+        <div class="input-group mb-3">
+          <input type="text" id="searchInput" class="form-control" placeholder="Search track or artist...">
+          <button id="btnSearch" class="btn sj-btn-accent">Search</button>
+        </div>
+        <div id="searchResults" class="sj-panel-scroll">
+          <div class="text-center py-4 sj-text-muted small">Search tracks from Spotify library</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="sj-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="small text-uppercase fw-bold sj-text-muted">Broadcast Queue</span>
+          <button id="btnClearQueue" class="btn btn-sm btn-outline-danger">Clear Queue</button>
+        </div>
+        <div id="queueList" class="sj-panel-scroll">
+          <div class="text-center py-4 sj-text-muted small">Queue is empty</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="sj-card mb-4">
+        <span class="small text-uppercase fw-bold sj-text-muted d-block mb-3">Listener Song Requests</span>
+        <div id="requestsList" class="sj-panel-scroll">
+          <div class="text-center py-3 sj-text-muted small">No pending requests</div>
+        </div>
+      </div>
+
+      <div class="sj-card">
+        <span class="small text-uppercase fw-bold sj-text-muted d-block mb-3">Live Room Chat</span>
+        <div id="chatMessages" class="sj-chat-scroll mb-3"></div>
+        <div class="input-group">
+          <input type="text" id="chatInput" class="form-control" placeholder="Message as DJ...">
+          <button id="btnSendChat" class="btn sj-btn-accent">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalAuthDJ" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content sj-bg-surface sj-border">
+      <form id="formAuthDJ">
+        <div class="modal-header sj-border-bottom">
+          <h5 class="modal-title sj-text-main">DJ Studio Authentication</h5>
+        </div>
+        <div class="modal-body">
+          <p class="small sj-text-muted mb-3">
+            Please enter your Station DJ Passcode to access studio broadcast and control tools.
+          </p>
+          <div id="authErrorAlert" class="alert alert-danger py-2 small d-none mb-3"></div>
+          <div class="mb-3">
+            <label class="form-label sj-text-main small">Station Passcode</label>
+            <input type="password" id="authPasscodeInput" class="form-control" placeholder="Enter station passcode" required autocomplete="current-password">
+          </div>
+        </div>
+        <div class="modal-footer sj-border-top">
+          <a href="/" class="btn sj-btn-outline">Exit</a>
+          <button type="submit" class="btn sj-btn-accent">Unlock Studio</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.STATION_SLUG = "<%= station.slug %>";
+  window.BACKEND_WS_URL = "<%= backendPublicUrl.replace(/^http/, 'ws') %>/ws";
+  window.STATION_PALETTE = <%- JSON.stringify(station.palette_config || {}).replace(/</g, '\\u003c').replace(/>/g, '\\u003e') %>;
+</script>
+<script type="module" src="/js/studio.js?v=<%= Date.now() %>"></script>
